@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>二進位互動實驗室 | 8-Bit Binary Interactive Learning Lab</title>
+  <meta name="description" content="互動式 8 位元二進位與十進位轉換教學課件。支援自由探索、十進位轉二進位分解、隨機出題測驗與算式展開，適合資訊科技與數學學習。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=JetBrains+Mono:wght@500;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="dark">
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-branding">
+        <div class="header-badge">8-BIT BYTE</div>
+        <h1 class="header-title">二進位互動實驗室</h1>
+        <p class="header-subtitle">Binary & Decimal Interactive Learning Lab</p>
+      </div>
+
+      <div class="header-controls">
+        <button id="btnSoundToggle" class="icon-button" title="切換音效 (Mute/Unmute)" aria-label="切換音效">
+          <span class="icon" id="soundIcon">🔊</span>
+          <span class="btn-text">音效開啟</span>
+        </button>
+        <button id="btnThemeToggle" class="icon-button" title="切換主題 (深色/淺色)" aria-label="切換主題">
+          <span class="icon" id="themeIcon">🌙</span>
+          <span class="btn-text">主題切換</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Mode Selector Navigation -->
+    <nav class="mode-nav" aria-label="教學模式切換">
+      <button class="mode-tab active" data-mode="1" id="tabMode1">
+        <span class="tab-badge">模式 1</span>
+        <span class="tab-title">自由探索</span>
+      </button>
+      <button class="mode-tab" data-mode="2" id="tabMode2">
+        <span class="tab-badge">模式 2</span>
+        <span class="tab-title">十進位轉二進位</span>
+      </button>
+      <button class="mode-tab" data-mode="3" id="tabMode3">
+        <span class="tab-badge">模式 3</span>
+        <span class="tab-title">隨機測驗挑戰</span>
+      </button>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      
+      <!-- Primary Interactive Board: 8-Bit Levers -->
+      <section class="lever-board-card" aria-label="8 位元開關操作區">
+        <div class="board-header">
+          <div class="board-info">
+            <span class="badge-chip">8 位元位元組 (1 Byte = 8 Bits)</span>
+            <span class="range-info">數值範圍：0 ～ 255</span>
+          </div>
+          <div class="board-tools">
+            <button id="btnToggleFormula" class="action-button secondary">
+              <span class="icon">📐</span>
+              <span id="formulaBtnText">顯示算式</span>
+            </button>
+            <button id="btnResetAll" class="action-button ghost" title="將所有開關歸零">
+              <span class="icon">🔄</span>
+              <span>全部歸零</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 8 Bit Columns Grid (From 128 down to 1) -->
+        <div class="bits-grid" id="bitsGrid">
+          <!-- Dynamically filled by JavaScript, fallback static items -->
+        </div>
+
+        <!-- Dynamic Math Formula Panel (Collapsible) -->
+        <div class="formula-card hidden" id="formulaCard">
+          <div class="formula-header">
+            <span class="formula-tag">數學加權展開式</span>
+            <span class="formula-desc">每一位元的數值乘以其二進位權重（2 的次方）之總和：</span>
+          </div>
+          <div class="formula-content" id="formulaExpression">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Summary Dashboard Bar -->
+        <div class="stats-bar">
+          <div class="stat-item highlight">
+            <span class="stat-label">十進位總和 (Decimal)</span>
+            <div class="stat-value-wrap">
+              <span class="stat-value decimal-value" id="decimalTotal">0</span>
+              <span class="stat-base">₁₀</span>
+            </div>
+          </div>
+
+          <div class="stat-item">
+            <span class="stat-label">二進位代碼 (Binary)</span>
+            <div class="stat-value-wrap">
+              <span class="stat-value binary-value" id="binaryString">0000 0000</span>
+              <span class="stat-base">₂</span>
+              <button class="copy-btn" id="btnCopyBinary" title="複製二進位代碼">📋</button>
+            </div>
+          </div>
+
+          <div class="stat-item">
+            <span class="stat-label">十六進位 (Hex)</span>
+            <div class="stat-value-wrap">
+              <span class="stat-value hex-value" id="hexString">0x00</span>
+              <span class="stat-base">₁₆</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Mode-Specific Interaction Panels -->
+      
+      <!-- Panel 1: Free Exploration Tools -->
+      <section class="mode-panel active" id="panelMode1">
+        <div class="panel-inner">
+          <div class="panel-header">
+            <h3>🌟 自由探索快捷操作</h3>
+            <p>點擊拉桿或使用下方按鈕快速觀察二進位變化特徵：</p>
+          </div>
+          <div class="preset-buttons">
+            <button class="preset-btn" data-preset="all-on">全部設為 1 (255)</button>
+            <button class="preset-btn" data-preset="all-off">全部設為 0 (0)</button>
+            <button class="preset-btn" data-preset="invert">反轉所有位元 (NOT)</button>
+            <button class="preset-btn" data-preset="alternating-1">交替位元 10101010 (170)</button>
+            <button class="preset-btn" data-preset="alternating-2">交替位元 01010101 (85)</button>
+            <button class="preset-btn" data-preset="powers">僅最高位 10000000 (128)</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Panel 2: Decimal to Binary Converter -->
+      <section class="mode-panel" id="panelMode2">
+        <div class="panel-inner">
+          <div class="panel-header">
+            <h3>⚡ 十進位轉二進位轉換器</h3>
+            <p>輸入一個 0 ~ 255 的十進位整數，系統將透過貪婪減法（權重分解）自動調整拉桿！</p>
+          </div>
+
+          <form class="converter-form" id="converterForm">
+            <div class="input-group">
+              <label for="decInput">十進位數值 (0 ~ 255)：</label>
+              <div class="input-row">
+                <input type="number" id="decInput" min="0" max="255" value="152" placeholder="請輸入 0~255" required>
+                <input type="range" id="decRange" min="0" max="255" value="152" class="sync-slider">
+                <button type="submit" class="action-button primary" id="btnConvert">
+                  <span>⚡ 執行轉換</span>
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <!-- Conversion Breakdown Explanation Steps -->
+          <div class="breakdown-card" id="breakdownCard">
+            <div class="breakdown-title">
+              <span>權重分解步驟過程 (貪婪演算法)</span>
+              <span class="step-summary" id="breakdownSummary"></span>
+            </div>
+            <div class="steps-flow" id="stepsFlow">
+              <!-- Rendered dynamically by JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Panel 3: Random Quiz & Practice -->
+      <section class="mode-panel" id="panelMode3">
+        <div class="panel-inner">
+          <div class="panel-header">
+            <div class="quiz-status-header">
+              <h3>🎯 二進位挑戰測驗</h3>
+              <div class="streak-badge">
+                <span class="streak-fire">🔥</span>
+                <span>連續答對：<strong id="streakCount">0</strong> 題</span>
+              </div>
+            </div>
+            <p>考考你的二進位換算速度！請根據題目要求，撥動上方 8 個拉桿拼出對應的二進位表示：</p>
+          </div>
+
+          <div class="quiz-question-box">
+            <div class="question-label">目前題目</div>
+            <div class="question-target">
+              請問十進位數字 <span class="target-num" id="quizTargetNum">--</span> 的二進位表示為何？
+            </div>
+          </div>
+
+          <div class="quiz-actions">
+            <button class="action-button warning" id="btnNewQuiz">
+              <span>🎲 換一題 (練習)</span>
+            </button>
+            <button class="action-button primary large" id="btnCheckAnswer">
+              <span>✅ 檢查答案</span>
+            </button>
+            <button class="action-button ghost" id="btnQuizHint">
+              <span>💡 提示提示</span>
+            </button>
+          </div>
+
+          <!-- Quiz Feedback Banner -->
+          <div class="quiz-feedback-banner hidden" id="quizFeedback">
+            <div class="feedback-icon" id="feedbackIcon">🎉</div>
+            <div class="feedback-text">
+              <h4 id="feedbackTitle">回答正確！</h4>
+              <p id="feedbackDesc">太棒了！你的二進位觀念非常扎實。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer with Learning Guide & GitHub Deployment Info -->
+    <footer class="app-footer">
+      <div class="footer-content">
+        <p>💡 <strong>教學小秘笈</strong>：二進位是電腦運算的基石，每個位元只有 0 與 1。8 個位元由右至左分別代表 2⁰=1, 2¹=2, 2²=4, 2³=8, 2⁴=16, 2⁵=32, 2⁶=64, 2⁷=128。</p>
+        <p class="footer-meta">原課件來自 GeoGebra（Binary.ggb）｜ 由 Antigravity 升級打造為開源現代化網頁版 🚀</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Confetti Canvas for Quiz Success -->
+  <canvas id="confettiCanvas" class="confetti-canvas"></canvas>
+
+  <script src="app.js"></script>
+</body>
+</html>
