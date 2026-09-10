@@ -3,7 +3,7 @@
 一個輕量、現代、零環境依賴的 8 位元（0 ~ 255）二進位與十進位轉換教學互動網頁。
 改編自 GeoGebra 互動教學課件（`Binary.ggb`），保留了經典可愛的手繪拉桿開關，並升級為現代化響應式介面（RWD）、純程式碼 Web Audio 擬真音效與完整的三大教學模式。
 
-🔗 **線上展示網址**：`https://<你的GitHub帳號>.github.io/<此儲存庫名稱>/`
+🔗 **線上展示網址**：[https://tobytu317.github.io/binary-learning/](https://tobytu317.github.io/binary-learning/)
 
 ---
 
@@ -23,18 +23,3 @@
 3. **使用者友善體驗**：
    - 支援深色模式（Dark Mode）與淺色模式（Light Mode）一鍵切換。
    - 支援手機、平板與電腦全螢幕自適應排版。
-
----
-
-## 🚀 如何啟用 GitHub Pages 免費發布
-
-本專案為純靜態前端專案（HTML5 + CSS + JavaScript），不需要任何編譯或建置步驟：
-
-1. 將本儲存庫推上您的 GitHub（設為 **Public**）。
-2. 在儲存庫頁面點擊最上方的 **Settings**（設定）。
-3. 在左側選單點選 **Pages**。
-4. 在 **Build and deployment** 下方的 **Branch**：
-   - 分支選擇 `main`（或 `master`）。
-   - 資料夾選擇 `/ (root)`。
-   - 點擊 **Save**。
-5. 稍候約 1 ~ 2 分鐘，頁面頂部會出現您的專屬網址：`https://<你的GitHub帳號>.github.io/<儲存庫名稱>/`！
